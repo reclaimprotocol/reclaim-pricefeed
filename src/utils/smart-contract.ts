@@ -1,4 +1,4 @@
-import { ethers } from 'ethers'
+import { Wallet, ethers } from 'ethers'
 import { chains } from '../config.json'
 import { Pricefeed, Pricefeed__factory as PricefeedFactory } from '../types'
 
@@ -16,8 +16,9 @@ export function getContract(chainKey: string) {
 		}
 
 		const rpcProvider = new ethers.JsonRpcProvider(contractData.rpcUrl)
+		const wallet = new Wallet(process.env.PRIVATE_KEY!, rpcProvider)
 		existingContractsMap[chainKey] = PricefeedFactory
-			.connect(contractData.address, rpcProvider)
+			.connect(contractData.address, wallet)
 	}
 
 	return existingContractsMap[chainKey]

@@ -94,9 +94,17 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.TransparentUpgradeableProxy__factory>;
     getContractFactory(
+      name: "Reclaim",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Reclaim__factory>;
+    getContractFactory(
       name: "Pricefeed",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Pricefeed__factory>;
+    getContractFactory(
+      name: "PricefeedLib",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.PricefeedLib__factory>;
 
     getContractAt(
       name: "OwnableUpgradeable",
@@ -199,10 +207,20 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.TransparentUpgradeableProxy>;
     getContractAt(
+      name: "Reclaim",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Reclaim>;
+    getContractAt(
       name: "Pricefeed",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
     ): Promise<Contracts.Pricefeed>;
+    getContractAt(
+      name: "PricefeedLib",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.PricefeedLib>;
 
     deployContract(
       name: "OwnableUpgradeable",
@@ -285,9 +303,17 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.TransparentUpgradeableProxy>;
     deployContract(
+      name: "Reclaim",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.Reclaim>;
+    deployContract(
       name: "Pricefeed",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.Pricefeed>;
+    deployContract(
+      name: "PricefeedLib",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.PricefeedLib>;
 
     deployContract(
       name: "OwnableUpgradeable",
@@ -390,10 +416,20 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.TransparentUpgradeableProxy>;
     deployContract(
+      name: "Reclaim",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.Reclaim>;
+    deployContract(
       name: "Pricefeed",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.Pricefeed>;
+    deployContract(
+      name: "PricefeedLib",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.PricefeedLib>;
 
     // default types
     getContractFactory(

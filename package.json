@@ -49,8 +49,8 @@
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.9.2",
-    "@reclaimprotocol/reclaim-contracts": "github:reclaimprotocol/reclaim-contracts",
     "@reclaimprotocol/witness-sdk": "github:reclaimprotocol/witness-sdk",
+    "@reclaimprotocol/reclaim-contracts": "github:reclaimprotocol/reclaim-contracts",
     "alchemy-sdk": "^2.9.2",
     "operator-filter-registry": "^1.4.2",
     "pino": "^8.18.0"

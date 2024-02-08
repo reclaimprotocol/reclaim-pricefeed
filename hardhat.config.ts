@@ -1,12 +1,11 @@
 import dotenv from 'dotenv'
 dotenv.config()
 
-import { HardhatUserConfig } from 'hardhat/config'
+import type { HardhatUserConfig } from 'hardhat/config'
 import '@nomicfoundation/hardhat-toolbox'
 import '@openzeppelin/hardhat-upgrades'
 import "@matterlabs/hardhat-zksync-deploy"
 import "@matterlabs/hardhat-zksync-solc"
-import "@matterlabs/hardhat-zksync-verify"
 import "@matterlabs/hardhat-zksync-upgradable"
 import './tasks'
 
@@ -29,7 +28,8 @@ const API_CONFIG: { [_: string]: () => { url: string, zksync?: boolean } } = {
 	},
 	'zk-sync-sepolia': () => ({
 		url: 'https://sepolia.era.zksync.dev',
-		zksync: true
+		zksync: true,
+		ethNetwork: "sepolia",
 	})
 } 
 
@@ -80,6 +80,10 @@ const config: HardhatUserConfig = {
 		outDir: 'src/types',
 		target: 'ethers-v6',
 	},
+
+	paths: {
+		tests: './src/tests',
+	}
 }
 
 export default config

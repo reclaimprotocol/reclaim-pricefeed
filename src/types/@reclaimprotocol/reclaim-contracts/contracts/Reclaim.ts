@@ -21,17 +21,36 @@ import type {
   TypedLogDescription,
   TypedListener,
   TypedContractMethod,
-} from "../common";
+} from "../../../common";
 
-export declare namespace Pricefeed {
-  export type PriceDataStruct = {
-    updatedAt: BigNumberish;
-    priceUsd: BigNumberish;
+export declare namespace Reclaim {
+  export type WitnessStruct = { addr: AddressLike; host: string };
+
+  export type WitnessStructOutput = [addr: string, host: string] & {
+    addr: string;
+    host: string;
   };
 
-  export type PriceDataStructOutput = [updatedAt: bigint, priceUsd: bigint] & {
-    updatedAt: bigint;
-    priceUsd: bigint;
+  export type EpochStruct = {
+    id: BigNumberish;
+    timestampStart: BigNumberish;
+    timestampEnd: BigNumberish;
+    witnesses: Reclaim.WitnessStruct[];
+    minimumWitnessesForClaimCreation: BigNumberish;
+  };
+
+  export type EpochStructOutput = [
+    id: bigint,
+    timestampStart: bigint,
+    timestampEnd: bigint,
+    witnesses: Reclaim.WitnessStructOutput[],
+    minimumWitnessesForClaimCreation: bigint
+  ] & {
+    id: bigint;
+    timestampStart: bigint;
+    timestampEnd: bigint;
+    witnesses: Reclaim.WitnessStructOutput[];
+    minimumWitnessesForClaimCreation: bigint;
   };
 }
 
@@ -63,35 +82,83 @@ export declare namespace Claims {
   ] & { identifier: string; owner: string; timestampS: bigint; epoch: bigint };
 }
 
-export interface PricefeedInterface extends Interface {
+export interface ReclaimInterface extends Interface {
   getFunction(
     nameOrSignature:
-      | "getPrice"
+      | "addAsWitness"
+      | "addNewEpoch"
+      | "assertValidEpochAndSignedClaim"
+      | "currentEpoch"
+      | "epochDurationS"
+      | "epochs"
+      | "fetchEpoch"
+      | "fetchWitnessesForClaim"
       | "initialize"
+      | "minimumWitnessesForClaimCreation"
       | "owner"
       | "proxiableUUID"
-      | "reclaimContract"
+      | "removeAsWitness"
       | "renounceOwnership"
-      | "setReclaimContract"
       | "transferOwnership"
-      | "updatePriceWithProof"
+      | "updateWitnessWhitelist"
       | "upgradeTo"
       | "upgradeToAndCall"
+      | "witnesses"
   ): FunctionFragment;
 
   getEvent(
     nameOrSignatureOrTopic:
       | "AdminChanged"
       | "BeaconUpgraded"
+      | "EpochAdded"
       | "Initialized"
       | "OwnershipTransferred"
-      | "PriceUpdated"
       | "Upgraded"
   ): EventFragment;
 
-  encodeFunctionData(functionFragment: "getPrice", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "addAsWitness",
+    values: [AddressLike, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "addNewEpoch",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "assertValidEpochAndSignedClaim",
+    values: [
+      BigNumberish,
+      Claims.ClaimInfoStruct,
+      Claims.CompleteClaimDataStruct,
+      BytesLike[]
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "currentEpoch",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "epochDurationS",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "epochs",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "fetchEpoch",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "fetchWitnessesForClaim",
+    values: [BigNumberish, BytesLike, BigNumberish]
+  ): string;
   encodeFunctionData(
     functionFragment: "initialize",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "minimumWitnessesForClaimCreation",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
@@ -100,28 +167,20 @@ export interface PricefeedInterface extends Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "reclaimContract",
-    values?: undefined
+    functionFragment: "removeAsWitness",
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "setReclaimContract",
-    values: [AddressLike]
-  ): string;
-  encodeFunctionData(
     functionFragment: "transferOwnership",
     values: [AddressLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "updatePriceWithProof",
-    values: [
-      Claims.ClaimInfoStruct,
-      Claims.CompleteClaimDataStruct,
-      BytesLike[]
-    ]
+    functionFragment: "updateWitnessWhitelist",
+    values: [AddressLike, boolean]
   ): string;
   encodeFunctionData(
     functionFragment: "upgradeTo",
@@ -131,16 +190,49 @@ export interface PricefeedInterface extends Interface {
     functionFragment: "upgradeToAndCall",
     values: [AddressLike, BytesLike]
   ): string;
+  encodeFunctionData(
+    functionFragment: "witnesses",
+    values: [BigNumberish]
+  ): string;
 
-  decodeFunctionResult(functionFragment: "getPrice", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "addAsWitness",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "addNewEpoch",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "assertValidEpochAndSignedClaim",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "currentEpoch",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "epochDurationS",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "epochs", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "fetchEpoch", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "fetchWitnessesForClaim",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "minimumWitnessesForClaimCreation",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "proxiableUUID",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "reclaimContract",
+    functionFragment: "removeAsWitness",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -148,15 +240,11 @@ export interface PricefeedInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setReclaimContract",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "updatePriceWithProof",
+    functionFragment: "updateWitnessWhitelist",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "upgradeTo", data: BytesLike): Result;
@@ -164,6 +252,7 @@ export interface PricefeedInterface extends Interface {
     functionFragment: "upgradeToAndCall",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "witnesses", data: BytesLike): Result;
 }
 
 export namespace AdminChangedEvent {
@@ -184,6 +273,18 @@ export namespace BeaconUpgradedEvent {
   export type OutputTuple = [beacon: string];
   export interface OutputObject {
     beacon: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace EpochAddedEvent {
+  export type InputTuple = [epoch: Reclaim.EpochStruct];
+  export type OutputTuple = [epoch: Reclaim.EpochStructOutput];
+  export interface OutputObject {
+    epoch: Reclaim.EpochStructOutput;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -216,22 +317,6 @@ export namespace OwnershipTransferredEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export namespace PriceUpdatedEvent {
-  export type InputTuple = [coinId: string, epoch: Pricefeed.PriceDataStruct];
-  export type OutputTuple = [
-    coinId: string,
-    epoch: Pricefeed.PriceDataStructOutput
-  ];
-  export interface OutputObject {
-    coinId: string;
-    epoch: Pricefeed.PriceDataStructOutput;
-  }
-  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-  export type Filter = TypedDeferredTopicFilter<Event>;
-  export type Log = TypedEventLog<Event>;
-  export type LogDescription = TypedLogDescription<Event>;
-}
-
 export namespace UpgradedEvent {
   export type InputTuple = [implementation: AddressLike];
   export type OutputTuple = [implementation: string];
@@ -244,11 +329,11 @@ export namespace UpgradedEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export interface Pricefeed extends BaseContract {
-  connect(runner?: ContractRunner | null): Pricefeed;
+export interface Reclaim extends BaseContract {
+  connect(runner?: ContractRunner | null): Reclaim;
   waitForDeployment(): Promise<this>;
 
-  interface: PricefeedInterface;
+  interface: ReclaimInterface;
 
   queryFilter<TCEvent extends TypedContractEvent>(
     event: TCEvent,
@@ -287,27 +372,69 @@ export interface Pricefeed extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
-  getPrice: TypedContractMethod<
-    [pairId: string],
-    [Pricefeed.PriceDataStructOutput],
+  addAsWitness: TypedContractMethod<
+    [witnessAddress: AddressLike, host: string],
+    [void],
+    "nonpayable"
+  >;
+
+  addNewEpoch: TypedContractMethod<[], [void], "nonpayable">;
+
+  assertValidEpochAndSignedClaim: TypedContractMethod<
+    [
+      epochNum: BigNumberish,
+      claimInfo: Claims.ClaimInfoStruct,
+      claimData: Claims.CompleteClaimDataStruct,
+      signatures: BytesLike[]
+    ],
+    [void],
+    "view"
+  >;
+
+  currentEpoch: TypedContractMethod<[], [bigint], "view">;
+
+  epochDurationS: TypedContractMethod<[], [bigint], "view">;
+
+  epochs: TypedContractMethod<
+    [arg0: BigNumberish],
+    [
+      [bigint, bigint, bigint, bigint] & {
+        id: bigint;
+        timestampStart: bigint;
+        timestampEnd: bigint;
+        minimumWitnessesForClaimCreation: bigint;
+      }
+    ],
+    "view"
+  >;
+
+  fetchEpoch: TypedContractMethod<
+    [epoch: BigNumberish],
+    [Reclaim.EpochStructOutput],
+    "view"
+  >;
+
+  fetchWitnessesForClaim: TypedContractMethod<
+    [epoch: BigNumberish, identifier: BytesLike, timestampS: BigNumberish],
+    [Reclaim.WitnessStructOutput[]],
     "view"
   >;
 
   initialize: TypedContractMethod<[], [void], "nonpayable">;
 
+  minimumWitnessesForClaimCreation: TypedContractMethod<[], [bigint], "view">;
+
   owner: TypedContractMethod<[], [string], "view">;
 
   proxiableUUID: TypedContractMethod<[], [string], "view">;
 
-  reclaimContract: TypedContractMethod<[], [string], "view">;
-
-  renounceOwnership: TypedContractMethod<[], [void], "nonpayable">;
-
-  setReclaimContract: TypedContractMethod<
-    [addr: AddressLike],
+  removeAsWitness: TypedContractMethod<
+    [witnessAddress: AddressLike],
     [void],
     "nonpayable"
   >;
+
+  renounceOwnership: TypedContractMethod<[], [void], "nonpayable">;
 
   transferOwnership: TypedContractMethod<
     [newOwner: AddressLike],
@@ -315,12 +442,8 @@ export interface Pricefeed extends BaseContract {
     "nonpayable"
   >;
 
-  updatePriceWithProof: TypedContractMethod<
-    [
-      claimInfo: Claims.ClaimInfoStruct,
-      claimData: Claims.CompleteClaimDataStruct,
-      signatures: BytesLike[]
-    ],
+  updateWitnessWhitelist: TypedContractMethod<
+    [addr: AddressLike, isWhitelisted: boolean],
     [void],
     "nonpayable"
   >;
@@ -337,20 +460,78 @@ export interface Pricefeed extends BaseContract {
     "payable"
   >;
 
+  witnesses: TypedContractMethod<
+    [arg0: BigNumberish],
+    [[string, string] & { addr: string; host: string }],
+    "view"
+  >;
+
   getFunction<T extends ContractMethod = ContractMethod>(
     key: string | FunctionFragment
   ): T;
 
   getFunction(
-    nameOrSignature: "getPrice"
+    nameOrSignature: "addAsWitness"
   ): TypedContractMethod<
-    [pairId: string],
-    [Pricefeed.PriceDataStructOutput],
+    [witnessAddress: AddressLike, host: string],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "addNewEpoch"
+  ): TypedContractMethod<[], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "assertValidEpochAndSignedClaim"
+  ): TypedContractMethod<
+    [
+      epochNum: BigNumberish,
+      claimInfo: Claims.ClaimInfoStruct,
+      claimData: Claims.CompleteClaimDataStruct,
+      signatures: BytesLike[]
+    ],
+    [void],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "currentEpoch"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "epochDurationS"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "epochs"
+  ): TypedContractMethod<
+    [arg0: BigNumberish],
+    [
+      [bigint, bigint, bigint, bigint] & {
+        id: bigint;
+        timestampStart: bigint;
+        timestampEnd: bigint;
+        minimumWitnessesForClaimCreation: bigint;
+      }
+    ],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "fetchEpoch"
+  ): TypedContractMethod<
+    [epoch: BigNumberish],
+    [Reclaim.EpochStructOutput],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "fetchWitnessesForClaim"
+  ): TypedContractMethod<
+    [epoch: BigNumberish, identifier: BytesLike, timestampS: BigNumberish],
+    [Reclaim.WitnessStructOutput[]],
     "view"
   >;
   getFunction(
     nameOrSignature: "initialize"
   ): TypedContractMethod<[], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "minimumWitnessesForClaimCreation"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "owner"
   ): TypedContractMethod<[], [string], "view">;
@@ -358,25 +539,18 @@ export interface Pricefeed extends BaseContract {
     nameOrSignature: "proxiableUUID"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
-    nameOrSignature: "reclaimContract"
-  ): TypedContractMethod<[], [string], "view">;
+    nameOrSignature: "removeAsWitness"
+  ): TypedContractMethod<[witnessAddress: AddressLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "renounceOwnership"
   ): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(
-    nameOrSignature: "setReclaimContract"
-  ): TypedContractMethod<[addr: AddressLike], [void], "nonpayable">;
-  getFunction(
     nameOrSignature: "transferOwnership"
   ): TypedContractMethod<[newOwner: AddressLike], [void], "nonpayable">;
   getFunction(
-    nameOrSignature: "updatePriceWithProof"
+    nameOrSignature: "updateWitnessWhitelist"
   ): TypedContractMethod<
-    [
-      claimInfo: Claims.ClaimInfoStruct,
-      claimData: Claims.CompleteClaimDataStruct,
-      signatures: BytesLike[]
-    ],
+    [addr: AddressLike, isWhitelisted: boolean],
     [void],
     "nonpayable"
   >;
@@ -394,6 +568,13 @@ export interface Pricefeed extends BaseContract {
     [void],
     "payable"
   >;
+  getFunction(
+    nameOrSignature: "witnesses"
+  ): TypedContractMethod<
+    [arg0: BigNumberish],
+    [[string, string] & { addr: string; host: string }],
+    "view"
+  >;
 
   getEvent(
     key: "AdminChanged"
@@ -410,6 +591,13 @@ export interface Pricefeed extends BaseContract {
     BeaconUpgradedEvent.OutputObject
   >;
   getEvent(
+    key: "EpochAdded"
+  ): TypedContractEvent<
+    EpochAddedEvent.InputTuple,
+    EpochAddedEvent.OutputTuple,
+    EpochAddedEvent.OutputObject
+  >;
+  getEvent(
     key: "Initialized"
   ): TypedContractEvent<
     InitializedEvent.InputTuple,
@@ -422,13 +610,6 @@ export interface Pricefeed extends BaseContract {
     OwnershipTransferredEvent.InputTuple,
     OwnershipTransferredEvent.OutputTuple,
     OwnershipTransferredEvent.OutputObject
-  >;
-  getEvent(
-    key: "PriceUpdated"
-  ): TypedContractEvent<
-    PriceUpdatedEvent.InputTuple,
-    PriceUpdatedEvent.OutputTuple,
-    PriceUpdatedEvent.OutputObject
   >;
   getEvent(
     key: "Upgraded"
@@ -461,6 +642,17 @@ export interface Pricefeed extends BaseContract {
       BeaconUpgradedEvent.OutputObject
     >;
 
+    "EpochAdded(tuple)": TypedContractEvent<
+      EpochAddedEvent.InputTuple,
+      EpochAddedEvent.OutputTuple,
+      EpochAddedEvent.OutputObject
+    >;
+    EpochAdded: TypedContractEvent<
+      EpochAddedEvent.InputTuple,
+      EpochAddedEvent.OutputTuple,
+      EpochAddedEvent.OutputObject
+    >;
+
     "Initialized(uint8)": TypedContractEvent<
       InitializedEvent.InputTuple,
       InitializedEvent.OutputTuple,
@@ -481,17 +673,6 @@ export interface Pricefeed extends BaseContract {
       OwnershipTransferredEvent.InputTuple,
       OwnershipTransferredEvent.OutputTuple,
       OwnershipTransferredEvent.OutputObject
-    >;
-
-    "PriceUpdated(string,tuple)": TypedContractEvent<
-      PriceUpdatedEvent.InputTuple,
-      PriceUpdatedEvent.OutputTuple,
-      PriceUpdatedEvent.OutputObject
-    >;
-    PriceUpdated: TypedContractEvent<
-      PriceUpdatedEvent.InputTuple,
-      PriceUpdatedEvent.OutputTuple,
-      PriceUpdatedEvent.OutputObject
     >;
 
     "Upgraded(address)": TypedContractEvent<

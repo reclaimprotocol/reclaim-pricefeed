@@ -2,7 +2,7 @@
 	"chains": {
 		"0x12c": {
 			"chainName": "zk-sync-sepolia",
-			"address": "",
+			"address": "0x49b9eA4cf4AA900F3971Dba0e14E6B3631CcAA55",
 			"rpcUrl": "https://sepolia.era.zksync.dev"
 		}
 	},
@@ -10,5 +10,5 @@
 	"coinsToPost": [
 		"oxbitcoin"
 	],
-	"postIntervalS": 30
+	"postIntervalS": 60
 }

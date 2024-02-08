@@ -1,3 +1,4 @@
+import './utils/env'
 import { postIntervalS } from './config.json'
 import { postPrice } from './functions/post-price'
 import LOGGER from './utils/logger'
@@ -22,6 +23,8 @@ async function main() {
 		},
 		postIntervalS * 1000
 	)
+
+	postPrice()
 
 	process.on('SIGINT', () => {
 		clearInterval(interval)

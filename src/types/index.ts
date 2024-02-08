@@ -3,6 +3,8 @@
 /* eslint-disable */
 import type * as openzeppelin from "./@openzeppelin";
 export type { openzeppelin };
+import type * as reclaimprotocol from "./@reclaimprotocol";
+export type { reclaimprotocol };
 import type * as contracts from "./contracts";
 export type { contracts };
 export * as factories from "./factories";
@@ -46,5 +48,9 @@ export type { ITransparentUpgradeableProxy } from "./@openzeppelin/contracts/pro
 export { ITransparentUpgradeableProxy__factory } from "./factories/@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol/ITransparentUpgradeableProxy__factory";
 export type { TransparentUpgradeableProxy } from "./@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol/TransparentUpgradeableProxy";
 export { TransparentUpgradeableProxy__factory } from "./factories/@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol/TransparentUpgradeableProxy__factory";
+export type { Reclaim } from "./@reclaimprotocol/reclaim-contracts/contracts/Reclaim";
+export { Reclaim__factory } from "./factories/@reclaimprotocol/reclaim-contracts/contracts/Reclaim__factory";
 export type { Pricefeed } from "./contracts/Pricefeed";
 export { Pricefeed__factory } from "./factories/contracts/Pricefeed__factory";
+export type { PricefeedLib } from "./contracts/Utils.sol/PricefeedLib";
+export { PricefeedLib__factory } from "./factories/contracts/Utils.sol/PricefeedLib__factory";
