@@ -1,0 +1,7 @@
+.openzeppelin/unknown-31337.json
+node_modules
+.env
+artifacts
+cache
+artifacts-zk
+cache-zk
